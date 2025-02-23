@@ -163,6 +163,60 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
             font-weight: 600;
             color: #495057;
         }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            width: 50%;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .btn-save {
+            background-color: #28a745;
+            color: white;
+            margin-top: 1rem;
+        }
     </style>
 </head>
 
@@ -213,7 +267,8 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
                             <?php echo date('M d, Y', strtotime($user['created_at'])); ?>
                         </td>
                         <td>
-                            <a href="edit_user.php?id=<?php echo $user['id']; ?>" class="btn btn-edit">Edit</a>
+                            <button onclick="openEditModal(<?php echo htmlspecialchars(json_encode($user)); ?>)"
+                                class="btn btn-edit">Edit</button>
                             <?php if ($user['id'] !== $_SESSION['user_id']): ?>
                                 <a href="delete_user.php?id=<?php echo $user['id']; ?>"
                                     class="btn btn-delete"
@@ -225,6 +280,54 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
             </tbody>
         </table>
     </div>
+
+    <!-- Add Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Edit User</h2>
+            <form id="editUserForm" method="POST" action="../includes/update_user.php">
+                <input type="hidden" id="userId" name="id">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="user_type">User Type</label>
+                    <select id="user_type" name="user_type" required>
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-save">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openEditModal(user) {
+            document.getElementById('editModal').style.display = 'block';
+            document.getElementById('userId').value = user.id;
+            document.getElementById('username').value = user.username;
+            document.getElementById('email').value = user.email;
+            document.getElementById('user_type').value = user.user_type;
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('editModal')) {
+                closeModal();
+            }
+        }
+    </script>
 </body>
 
 </html>
