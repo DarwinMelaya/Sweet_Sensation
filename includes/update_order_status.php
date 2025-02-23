@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset(
     $valid_statuses = ['pending', 'processing', 'completed', 'cancelled'];
     if (!in_array($status, $valid_statuses)) {
         $_SESSION['error'] = "Invalid status selected.";
-        header('Location: view_orders.php');
+        header('Location: ../pages/view_orders.php');
         exit();
     }
 
@@ -34,5 +34,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset(
     $stmt->close();
 }
 
-header('Location: view_orders.php');
+header('Location: ../pages/view_orders.php');
 exit();

@@ -3,13 +3,13 @@ session_start();
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: ../pages/login.php');
     exit();
 }
 
 // Check if cart is empty
 if (empty($_SESSION['cart'])) {
-    header('Location: cart.php');
+    header('Location: ../pages/cart.php');
     exit();
 }
 
@@ -46,12 +46,12 @@ try {
 
     // Redirect with success message
     $_SESSION['message'] = "Order placed successfully!";
-    header('Location: cart.php');
+    header('Location: ../pages/cart.php');
     exit();
 } catch (Exception $e) {
     // Rollback on error
     $conn->rollback();
     $_SESSION['error'] = "Error processing order. Please try again.";
-    header('Location: cart.php');
+    header('Location: ../pages/cart.php');
     exit();
 }
