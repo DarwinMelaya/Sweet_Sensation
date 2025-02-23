@@ -25,14 +25,34 @@ if (session_status() == PHP_SESSION_NONE) {
     }
 
     .hero {
-      background-image: url('https://i.pinimg.com/736x/30/f1/48/30f1487e4d2f3bb76065315210311adf.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      position: relative;
       padding: 100px 0;
       text-align: center;
       color: white;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    .hero-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .hero-slide.active {
+      opacity: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
     }
 
     .hero h1 {
@@ -79,8 +99,13 @@ if (session_status() == PHP_SESSION_NONE) {
   <?php include $_SERVER['DOCUMENT_ROOT'] . '/Sweet Sensations/components/header.php'; ?>
 
   <section class="hero">
-    <h1>Welcome to Sweet Sensations</h1>
-    <p>Discover our delightful collection of cakes and pastries</p>
+    <div class="hero-slide" style="background-image: url('https://i.pinimg.com/736x/30/f1/48/30f1487e4d2f3bb76065315210311adf.jpg');"></div>
+    <div class="hero-slide" style="background-image: url('https://t4.ftcdn.net/jpg/09/06/19/95/360_F_906199553_bgMA47aduJPKTPuUG5T7ePk706a07OkU.jpg');"></div>
+    <div class="hero-slide" style="background-image: url('https://static.vecteezy.com/system/resources/previews/032/020/082/large_2x/baking-background-a-variety-of-ingredients-for-baking-on-rustic-background-photo.jpg');"></div>
+    <div class="hero-content">
+      <h1>Welcome to Sweet Sensations</h1>
+      <p>Discover our delightful collection of cakes and pastries</p>
+    </div>
   </section>
 
   <section class="featured-products">
@@ -115,6 +140,26 @@ if (session_status() == PHP_SESSION_NONE) {
       </div>
     </div>
   </section>
+
+  <script>
+    // Add carousel functionality
+    const slides = document.querySelectorAll('.hero-slide');
+    let currentSlide = 0;
+
+    function showSlide(index) {
+      slides.forEach(slide => slide.classList.remove('active'));
+      slides[index].classList.add('active');
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    }
+
+    // Show first slide and start carousel
+    showSlide(0);
+    setInterval(nextSlide, 3000); // Change slide every 3 seconds
+  </script>
 
 </body>
 
