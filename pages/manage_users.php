@@ -239,6 +239,25 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
             width: 100%;
             padding: 0.75rem;
         }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .alert-success {
+            background-color: #dff0d8;
+            border: 1px solid #d6e9c6;
+            color: #3c763d;
+        }
+
+        .alert-error {
+            background-color: #f2dede;
+            border: 1px solid #ebccd1;
+            color: #a94442;
+        }
     </style>
 </head>
 
@@ -247,6 +266,24 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
 
     <div class="container">
         <h1>Manage Users</h1>
+
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert alert-success">
+                <?php
+                echo $_SESSION['success'];
+                unset($_SESSION['success']);
+                ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="alert alert-error">
+                <?php
+                echo $_SESSION['error'];
+                unset($_SESSION['error']);
+                ?>
+            </div>
+        <?php endif; ?>
 
         <table class="user-table">
             <thead>
@@ -278,9 +315,8 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
                                 <button onclick="openEditModal(<?php echo htmlspecialchars(json_encode($user)); ?>)"
                                     class="btn btn-edit">Edit</button>
                                 <?php if ($user['id'] !== $_SESSION['user_id']): ?>
-                                    <a href="delete_user.php?id=<?php echo $user['id']; ?>"
-                                        class="btn btn-delete"
-                                        onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                                    <button onclick="openDeleteModal(<?php echo $user['id']; ?>)"
+                                        class="btn btn-delete">Delete</button>
                                 <?php endif; ?>
                             </div>
                         </td>
@@ -317,6 +353,19 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
         </div>
     </div>
 
+    <!-- Add this new Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDeleteModal()">&times;</span>
+            <h2>Delete User</h2>
+            <p style="margin: 20px 0; text-align: center;">Are you sure you want to delete this user?</p>
+            <div style="display: flex; justify-content: center; gap: 10px;">
+                <button onclick="confirmDelete()" class="btn btn-delete" style="width: auto;">Delete</button>
+                <button onclick="closeDeleteModal()" class="btn" style="background-color: #6c757d; color: white; width: auto;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openEditModal(user) {
             document.getElementById('editModal').style.display = 'block';
@@ -330,10 +379,31 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
             document.getElementById('editModal').style.display = 'none';
         }
 
-        // Close modal when clicking outside
+        let userIdToDelete = null;
+
+        function openDeleteModal(userId) {
+            userIdToDelete = userId;
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            userIdToDelete = null;
+        }
+
+        function confirmDelete() {
+            if (userIdToDelete) {
+                window.location.href = '../includes/delete_user.php?id=' + userIdToDelete;
+            }
+        }
+
+        // Update the window.onclick handler to include both modals
         window.onclick = function(event) {
             if (event.target == document.getElementById('editModal')) {
                 closeModal();
+            }
+            if (event.target == document.getElementById('deleteModal')) {
+                closeDeleteModal();
             }
         }
     </script>
