@@ -63,47 +63,49 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
         .container {
             max-width: 1200px;
             margin: 2rem auto;
-            padding: 0 1rem;
+            padding: 0 2rem;
         }
 
-        /* Table styles */
+        /* Table styles - updated */
         .user-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             background: #fff;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             margin-top: 2rem;
         }
 
         .user-table thead {
             background-color: #DC143C;
-            color: white;
         }
 
         .user-table th {
-            padding: 1rem;
+            padding: 1.25rem 1rem;
             text-align: left;
             font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
         }
 
         .user-table td {
-            padding: 1rem;
+            padding: 1.25rem 1rem;
             border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
         }
 
-        .user-table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        /* User type badge */
+        /* User type badge - updated */
         .user-type {
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.875rem;
+            padding: 0.4rem 1rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
             font-weight: 500;
             text-transform: capitalize;
+            display: inline-block;
         }
 
         .user-type.admin {
@@ -112,59 +114,68 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
         }
 
         .user-type.user {
-            background-color: #e9ecef;
-            color: #495057;
+            background-color: #f0f0f0;
+            color: #666;
         }
 
-        /* Action buttons */
+        /* Action buttons - updated */
         .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
             font-weight: 500;
             text-decoration: none;
-            margin-right: 0.5rem;
             display: inline-block;
             border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            width: 80px;
+            text-align: center;
+        }
+
+        /* New styles for actions column */
+        .actions-cell {
+            display: flex;
+            justify-content: flex-start;
+            gap: 0.5rem;
         }
 
         .btn-edit {
-            background-color: #007bff;
+            background-color: #0066ff;
             color: white;
         }
 
         .btn-delete {
-            background-color: #dc3545;
+            background-color: #ff3366;
             color: white;
         }
 
         .btn:hover {
             opacity: 0.9;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
 
-        /* Page title */
+        /* Page title - updated */
         h1 {
-            color: #1a1a1a;
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
+            color: #333;
+            font-size: 2.25rem;
+            margin-bottom: 2rem;
             text-align: center;
+            font-weight: 600;
         }
 
-        /* Date formatting */
+        /* Date and ID formatting - updated */
         .date-cell {
-            color: #6c757d;
-            font-size: 0.875rem;
+            color: #666;
+            font-size: 0.9rem;
         }
 
-        /* ID column */
         .id-column {
             font-weight: 600;
-            color: #495057;
+            color: #333;
         }
 
-        /* Modal styles */
+        /* Modal styles - updated */
         .modal {
             display: none;
             position: fixed;
@@ -179,11 +190,11 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
         .modal-content {
             position: relative;
             background-color: #fff;
-            margin: 10% auto;
-            padding: 20px;
-            width: 50%;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin: 8% auto;
+            padding: 2rem;
+            width: 40%;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
         }
 
         .close {
@@ -195,27 +206,38 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
         }
 
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             font-weight: 500;
+            color: #333;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 0.5rem;
+            padding: 0.75rem;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #0066ff;
         }
 
         .btn-save {
-            background-color: #28a745;
+            background-color: #00cc66;
             color: white;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 0.75rem;
         }
     </style>
 </head>
@@ -252,13 +274,15 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
                             <?php echo date('M d, Y', strtotime($user['created_at'])); ?>
                         </td>
                         <td>
-                            <button onclick="openEditModal(<?php echo htmlspecialchars(json_encode($user)); ?>)"
-                                class="btn btn-edit">Edit</button>
-                            <?php if ($user['id'] !== $_SESSION['user_id']): ?>
-                                <a href="delete_user.php?id=<?php echo $user['id']; ?>"
-                                    class="btn btn-delete"
-                                    onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
-                            <?php endif; ?>
+                            <div class="actions-cell">
+                                <button onclick="openEditModal(<?php echo htmlspecialchars(json_encode($user)); ?>)"
+                                    class="btn btn-edit">Edit</button>
+                                <?php if ($user['id'] !== $_SESSION['user_id']): ?>
+                                    <a href="delete_user.php?id=<?php echo $user['id']; ?>"
+                                        class="btn btn-delete"
+                                        onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                                <?php endif; ?>
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>
