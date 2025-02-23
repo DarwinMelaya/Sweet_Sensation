@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 23, 2025 at 09:43 AM
+-- Generation Time: Feb 23, 2025 at 01:09 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -40,7 +40,9 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `user_id`, `total_amount`, `status`, `created_at`) VALUES
-(11, 8, 2100.00, 'completed', '2025-02-23 05:12:20');
+(11, 8, 2100.00, 'completed', '2025-02-23 05:12:20'),
+(12, 8, 75.00, 'completed', '2025-02-23 08:45:45'),
+(13, 8, 1175.00, 'completed', '2025-02-23 12:03:58');
 
 -- --------------------------------------------------------
 
@@ -62,7 +64,11 @@ CREATE TABLE `order_items` (
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`) VALUES
 (13, 11, 23, 1, 100.00),
-(14, 11, 20, 1, 2000.00);
+(14, 11, 20, 1, 2000.00),
+(15, 12, 21, 1, 75.00),
+(16, 13, 10, 1, 1000.00),
+(17, 13, 21, 1, 75.00),
+(18, 13, 23, 1, 100.00);
 
 -- --------------------------------------------------------
 
@@ -110,7 +116,9 @@ CREATE TABLE `sales` (
 --
 
 INSERT INTO `sales` (`id`, `order_id`, `recorded_at`) VALUES
-(3, 11, '2025-02-23 05:16:13');
+(3, 11, '2025-02-23 05:16:13'),
+(4, 12, '2025-02-23 08:46:03'),
+(5, 13, '2025-02-23 12:04:37');
 
 -- --------------------------------------------------------
 
@@ -132,10 +140,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `user_type`, `created_at`) VALUES
-(1, 'admin', 'admin@gmail.com', '$2y$10$aJTRUb/9BmgPHH16gyfzr.po.jNw9UP6.uC9fmDz.K5t5225ierD6', 'admin', '2025-02-07 04:01:30'),
+(1, 'Admin', 'admin@gmail.com', '$2y$10$aJTRUb/9BmgPHH16gyfzr.po.jNw9UP6.uC9fmDz.K5t5225ierD6', 'admin', '2025-02-07 04:01:30'),
 (3, 'lawrence', 'lawrence@gmail.com', '$2y$10$/RnTu47sZ1D6oTBKgBo85.iTzVL0RpuDE80jRvmQG8KYjGzySYabK', 'user', '2025-02-07 04:35:15'),
 (6, 'Dodet', 'bagan@gmail.com', '$2y$10$6cnCJzRKH8V0wSuhk.5F4uyEynpB1mTz2Ie68nONgLO9Z7.tsUute', 'user', '2025-02-07 14:45:53'),
-(7, 'Darwin', 'melayadarwin@gmail.com', '$2y$10$DYOzChO/sUoGa4RtnqHUK.8Cj0wmjVHuTTmtoZw5SFzb7cxpVCnve', 'admin', '2025-02-23 02:15:21'),
 (8, 'user', 'user@gmail.com', '$2y$10$4Bcw685yM1hY5Y2VNlb1fO24v4gOmktXQYcR/67QLkESsuh4594Yq', 'user', '2025-02-23 02:37:05');
 
 --
@@ -184,31 +191,31 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
