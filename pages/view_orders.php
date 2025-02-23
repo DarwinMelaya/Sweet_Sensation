@@ -186,19 +186,19 @@ $result = $conn->query($query);
         }
 
         .view-details-btn {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background-color: #3b82f6;
+            background-color: #DC143C;
             color: white;
-            text-decoration: none;
+            border: none;
+            padding: 0.5rem 1rem;
             border-radius: 6px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: background-color 0.2s;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
         }
 
         .view-details-btn:hover {
-            background-color: #2563eb;
+            background-color: #b91c1c;
+            transform: scale(1.05);
         }
 
         /* Responsive Design */
@@ -219,6 +219,121 @@ $result = $conn->query($query);
             .orders-table td {
                 padding: 0.75rem;
                 font-size: 0.875rem;
+            }
+        }
+
+        /* Updated Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 800px;
+            position: relative;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #DC143C;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .close:hover {
+            color: #b91c1c;
+            transform: scale(1.1);
+        }
+
+        .modal h2 {
+            color: #DC143C;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid #ffe5e5;
+        }
+
+        .order-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .order-info-group {
+            background: #fff5f5;
+            padding: 1.2rem;
+            border-radius: 8px;
+            border: 1px solid #ffe5e5;
+        }
+
+        .order-info-group h3 {
+            color: #DC143C;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .order-info-group p {
+            margin: 0.5rem 0;
+            color: #4a5568;
+        }
+
+        .order-items-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1.5rem;
+            border: 1px solid #ffe5e5;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .order-items-table th {
+            background-color: #DC143C;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .order-items-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #ffe5e5;
+        }
+
+        .order-items-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .order-items-table tr:hover {
+            background-color: #fff5f5;
+        }
+
+        @media (max-width: 768px) {
+            .order-detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 2% auto;
             }
         }
     </style>
@@ -298,7 +413,7 @@ $result = $conn->query($query);
                             </td>
                             <td><?php echo date('M d, Y H:i', strtotime($order['created_at'])); ?></td>
                             <td>
-                                <a href="view_order_details.php?id=<?php echo $order['id']; ?>" class="view-details-btn">View Details</a>
+                                <button class="view-details-btn" data-order-id="<?php echo $order['id']; ?>">View Details</button>
                             </td>
                         </tr>
                     <?php endwhile; ?>
@@ -306,6 +421,15 @@ $result = $conn->query($query);
             </table>
         </div>
     </section>
+
+    <!-- Update the modal HTML -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Order Details</h2>
+            <div id="orderDetails"></div>
+        </div>
+    </div>
 
     <script>
         // Auto-hide messages after 3 seconds
@@ -316,6 +440,95 @@ $result = $conn->query($query);
                     message.style.display = 'none';
                 });
             }, 3000);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('orderModal');
+            const closeBtn = document.querySelector('.close');
+            const orderDetails = document.getElementById('orderDetails');
+
+            // Add click event to all View Details buttons
+            document.querySelectorAll('.view-details-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const orderId = this.getAttribute('data-order-id');
+                    fetchOrderDetails(orderId);
+                });
+            });
+
+            // Close modal when clicking (x)
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            function fetchOrderDetails(orderId) {
+                fetch(`../includes/get_order_details.php?id=${orderId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.error) {
+                            throw new Error(data.error);
+                        }
+                        displayOrderDetails(data);
+                        modal.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error fetching order details: ' + error.message);
+                    });
+            }
+
+            function displayOrderDetails(data) {
+                orderDetails.innerHTML = `
+                    <div class="order-detail-grid">
+                        <div class="order-info-group">
+                            <h3>Order Information</h3>
+                            <p><strong>Order ID:</strong> #${data.order.id}</p>
+                            <p><strong>Date:</strong> ${data.order.created_at}</p>
+                            <p><strong>Status:</strong> ${data.order.status}</p>
+                            <p><strong>Total Amount:</strong> ₱${data.order.total_amount}</p>
+                        </div>
+                        <div class="order-info-group">
+                            <h3>Customer Information</h3>
+                            <p><strong>Name:</strong> ${data.order.username}</p>
+                            <p><strong>Email:</strong> ${data.order.email}</p>
+                        </div>
+                    </div>
+                    <div class="order-items">
+                        <h3>Order Items</h3>
+                        <table class="order-items-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.items.map(item => `
+                                    <tr>
+                                        <td>${item.name}</td>
+                                        <td>₱${item.price}</td>
+                                        <td>${item.quantity}</td>
+                                        <td>₱${item.subtotal}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
         });
     </script>
 </body>
