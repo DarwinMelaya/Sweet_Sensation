@@ -199,6 +199,11 @@ $result = $conn->query($query);
             border-color: #fecaca;
         }
 
+        .status-form select:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
         .view-details-btn {
             background-color: #DC143C;
             color: white;
@@ -415,7 +420,8 @@ $result = $conn->query($query);
                             <td>₱<?php echo number_format($order['total_amount'], 2); ?></td>
                             <td>
                                 <form method="POST" action="../includes/update_order_status.php" class="status-form">
-                                    <select name="status" onchange="this.form.submit()" class="<?php echo $order['status']; ?>">
+                                    <select name="status" onchange="this.form.submit()" class="<?php echo $order['status']; ?>"
+                                        <?php echo ($order['status'] === 'completed' || $order['status'] === 'cancelled') ? 'disabled' : ''; ?>>
                                         <?php
                                         $statuses = ['pending', 'processing', 'completed', 'cancelled'];
                                         foreach ($statuses as $status) {
