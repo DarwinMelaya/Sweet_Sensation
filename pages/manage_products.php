@@ -303,22 +303,7 @@ $products = $conn->query($sql);
 </head>
 
 <body>
-    <header>
-        <div class="container">
-            <h1 class="logo">Sweet Sensations</h1>
-            <nav>
-                <ul>
-                    <li><a href="admin_dashboard.php">Dashboard</a></li>
-                    <li><a href="manage_products.php" class="active">Manage Products</a></li>
-                    <li><a href="manage_users.php">Manage Users</a></li>
-                    <li><a href="view_orders.php">View Orders</a></li>
-                    <li><a href="sales_report.php">Sales Report</a></li>
-                    <span style="color: white;">|</span>
-                    <li><a href="../includes/logout.php">Log out</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <?php include '../components/admin_header.php'; ?>
     <div>
         <h1>Manage Products</h1>
         <h5 style="text-align: center; font-weight:500; margin:-10px 90px 10px 90px; border-bottom: 1px solid rgb(0, 0, 0, 0.2); padding-bottom:10px;">Add, edit, delete and manage your product listings below.</h5>

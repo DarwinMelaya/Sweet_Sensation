@@ -241,22 +241,7 @@ if ($summary['previous_period_total'] > 0) {
 </head>
 
 <body>
-    <header>
-        <div class="container">
-            <h1 class="logo">Sweet Sensations</h1>
-            <nav>
-                <ul>
-                    <li><a href="admin_dashboard.php">Dashboard</a></li>
-                    <li><a href="manage_products.php">Manage Products</a></li>
-                    <li><a href="manage_users.php">Manage Users</a></li>
-                    <li><a href="view_orders.php">View Orders</a></li>
-                    <li><a href="sales_report.php" class="active">Sales Report</a></li>
-                    <span style="color: white;">|</span>
-                    <li><a href="../includes/logout.php">Log out</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <?php include '../components/admin_header.php'; ?>
 
     <div class="container">
         <div class="report-container">

@@ -123,22 +123,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'admin') {
 </head>
 
 <body>
-    <header>
-        <div class="container">
-            <h1 class="logo">Sweet Sensations</h1>
-            <nav>
-                <ul>
-                    <li><a href="admin_dashboard.php" class="active">Dashboard</a></li>
-                    <li><a href="manage_products.php">Manage Products</a></li>
-                    <li><a href="manage_users.php">Manage Users</a></li>
-                    <li><a href="view_orders.php">View Orders</a></li>
-                    <li><a href="sales_report.php">Sales Report</a></li>
-                    <span style="color: white;">|</span>
-                    <li><a href="../includes/logout.php">Log out</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <?php include '../components/admin_header.php'; ?>
     <section class="dashboard">
         <div class="container">
             <h2>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></h2>
