@@ -1,0 +1,129 @@
+.products {
+    padding-top: 2rem;
+    text-align: center;
+}
+
+.product-container {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+}
+
+.products .container h1 {
+    text-align: center;
+    font-weight: 600;
+    font-size: 32px;
+}
+
+.products .container p {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 14px;
+}
+
+.product {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+    margin: auto;
+    background-color: #fff;
+}
+
+.image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-price {
+    color: #DC143C;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.pduct-info {
+    margin-top: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.pduct-info p {
+    text-align: center !important;
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.addcart-btn button {
+    width: 100%;
+    height: 40px;
+    padding: 0 60px;
+    border: none;
+    font-weight: 600;
+    font-size: 15px;
+    color: #FFFFFF;
+    border-radius: 4px;
+    background-color: #DC143C;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.addcart-btn button:hover {
+    background-color: #c1123b;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+    .product-container {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .product {
+        max-width: 250px;
+    }
+
+    .image {
+        height: 180px;
+    }
+
+    .addcart-btn button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-container {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .product {
+        max-width: 100%;
+    }
+
+    .image {
+        height: auto;
+    }
+
+    .addcart-btn button {
+        width: 100%;
+    }
+}
