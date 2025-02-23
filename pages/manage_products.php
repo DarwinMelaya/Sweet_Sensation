@@ -17,12 +17,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $target_file = $target_dir . basename($image);
 
         if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-            $sql = "INSERT INTO products (name, description, price, image) VALUES ('$name', '$description', '$price', '$image')";
-            if ($conn->query($sql) === TRUE) {
+            $stmt = $conn->prepare("INSERT INTO products (name, description, price, image) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param("ssds", $name, $description, $price, $image);
+
+            if ($stmt->execute()) {
                 $message = "Product added successfully!";
             } else {
-                $message = "Error: " . $sql . "<br>" . $conn->error;
+                $message = "Error: " . $stmt->error;
             }
+            $stmt->close();
         } else {
             $message = "Sorry, there was an error uploading your file.";
         }
@@ -37,24 +40,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($image) {
             move_uploaded_file($_FILES['image']['tmp_name'], $target_file);
-            $sql = "UPDATE products SET name='$name', description='$description', price='$price', image='$image' WHERE id='$id'";
+            $stmt = $conn->prepare("UPDATE products SET name=?, description=?, price=?, image=? WHERE id=?");
+            $stmt->bind_param("ssdsi", $name, $description, $price, $image, $id);
         } else {
-            $sql = "UPDATE products SET name='$name', description='$description', price='$price' WHERE id='$id'";
+            $stmt = $conn->prepare("UPDATE products SET name=?, description=?, price=? WHERE id=?");
+            $stmt->bind_param("ssdi", $name, $description, $price, $id);
         }
 
-        if ($conn->query($sql) === TRUE) {
+        if ($stmt->execute()) {
             $message = "Product updated successfully!";
         } else {
-            $message = "Error: " . $sql . "<br>" . $conn->error;
+            $message = "Error: " . $stmt->error;
         }
+        $stmt->close();
     } elseif (isset($_POST['delete_product'])) {
         $id = isset($_POST['id']) ? $_POST['id'] : '';
-        $sql = "DELETE FROM products WHERE id='$id'";
-        if ($conn->query($sql) === TRUE) {
+        $stmt = $conn->prepare("DELETE FROM products WHERE id=?");
+        $stmt->bind_param("i", $id);
+
+        if ($stmt->execute()) {
             $message = "Product deleted successfully!";
         } else {
-            $message = "Error: " . $sql . "<br>" . $conn->error;
+            $message = "Error: " . $stmt->error;
         }
+        $stmt->close();
     }
 }
 
@@ -265,25 +274,49 @@ $products = $conn->query($sql);
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgb(0, 0, 0);
-            background-color: rgba(0, 0, 0, 0.4);
-            padding-top: 60px;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Slightly darker background */
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            /* For Safari support */
         }
 
         .modal-content {
             background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
+            margin: 0;
+            padding: 30px;
+            border: none;
+            /* Remove border */
             width: 80%;
             max-width: 500px;
-            border-radius: 8px;
+            border-radius: 12px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            /* Enhanced shadow */
+        }
+
+        /* Optional: Add animation for smooth appearance */
+        .modal.show {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .close {
@@ -304,24 +337,20 @@ $products = $conn->query($sql);
 
 <body>
     <?php include '../components/admin_header.php'; ?>
-    <div>
-        <h1>Manage Products</h1>
-        <h5 style="text-align: center; font-weight:500; margin:-10px 90px 10px 90px; border-bottom: 1px solid rgb(0, 0, 0, 0.2); padding-bottom:10px;">Add, edit, delete and manage your product listings below.</h5>
+    <div></div>
+    <h1>Manage Products</h1>
+    <h5 style="text-align: center; font-weight:500; margin:-10px 90px 10px 90px; border-bottom: 1px solid rgb(0, 0, 0, 0.2); padding-bottom:10px;"></h5>
     </div>
 
     <div class="container">
-        <h1>Add New Product</h1>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
+            <h1 style="margin: 0;">Products</h1>
+            <button onclick="openAddModal()" style="font-size: 16px; padding: 12px 24px;">Add New Product</button>
+        </div>
         <?php if (isset($message)): ?>
             <p class="message"><?php echo $message; ?></p>
         <?php endif; ?>
-        <form class="form-main" action="manage_products.php" method="POST" enctype="multipart/form-data">
-            <input type="text" name="name" placeholder="Product Name" required>
-            <textarea name="description" placeholder="Product Description" rows="4" required></textarea>
-            <input type="number" name="price" placeholder="Product Price" step="0.01" required>
-            <input type="file" name="image" accept="image/*" required>
-            <button type="submit" name="add_product">Add Product</button>
-        </form>
-        <h1>Products</h1>
+
         <table>
             <thead>
                 <tr>
@@ -356,25 +385,56 @@ $products = $conn->query($sql);
             </tbody>
         </table>
 
-    </div>
-
-    <!-- The Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Edit Product</h2>
-            <form class="form-main" action="manage_products.php" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="id" id="edit-id">
-                <input type="text" name="name" id="edit-name" placeholder="Product Name" required>
-                <textarea name="description" id="edit-description" placeholder="Product Description" rows="4" required></textarea>
-                <input type="number" name="price" id="edit-price" placeholder="Product Price" step="0.01" required>
-                <input type="file" name="image" accept="image/*">
-                <button type="submit" name="edit_product">Update Product</button>
-            </form>
+        <!-- Add New Product Modal -->
+        <div id="addModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAddModal()">&times;</span>
+                <h2>Add New Product</h2>
+                <form class="form-main" action="manage_products.php" method="POST" enctype="multipart/form-data">
+                    <input type="text" name="name" placeholder="Product Name" required>
+                    <textarea name="description" placeholder="Product Description" rows="4" required></textarea>
+                    <input type="number" name="price" placeholder="Product Price" step="0.01" required>
+                    <input type="file" name="image" accept="image/*" required>
+                    <button type="submit" name="add_product">Add Product</button>
+                </form>
+            </div>
         </div>
+
+        <!-- Edit Product Modal -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h2>Edit Product</h2>
+                <form class="form-main" action="manage_products.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="id" id="edit-id">
+                    <input type="text" name="name" id="edit-name" placeholder="Product Name" required>
+                    <textarea name="description" id="edit-description" placeholder="Product Description" rows="4" required></textarea>
+                    <input type="number" name="price" id="edit-price" placeholder="Product Price" step="0.01" required>
+                    <input type="file" name="image" accept="image/*">
+                    <button type="submit" name="edit_product">Update Product</button>
+                </form>
+            </div>
+        </div>
+
     </div>
 
     <script>
+        function openAddModal() {
+            const modal = document.getElementById('addModal');
+            modal.style.display = "block";
+            // Optional: Add class for animation
+            modal.classList.add('show');
+            // Add blur to background content
+            document.querySelector('.container').style.filter = 'blur(5px)';
+        }
+
+        function closeAddModal() {
+            const modal = document.getElementById('addModal');
+            modal.style.display = "none";
+            // Remove blur from background content
+            document.querySelector('.container').style.filter = 'none';
+        }
+
         function openModal(id, name, description, price) {
             document.getElementById('edit-id').value = id;
             document.getElementById('edit-name').value = name;
@@ -388,8 +448,13 @@ $products = $conn->query($sql);
         }
 
         window.onclick = function(event) {
-            if (event.target == document.getElementById('editModal')) {
+            const editModal = document.getElementById('editModal');
+            const addModal = document.getElementById('addModal');
+            if (event.target == editModal) {
                 closeModal();
+            }
+            if (event.target == addModal) {
+                closeAddModal();
             }
         }
     </script>
