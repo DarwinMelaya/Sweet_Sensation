@@ -41,8 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_to_cart'])) {
             'image' => $product_image,
             'quantity' => 1
         ];
-        header('Location: cart.php');
-        exit();
+        $message = "Item added to cart successfully!";
     }
 }
 
@@ -54,6 +53,7 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -71,8 +71,9 @@ $conn->close();
         }
     </style>
 </head>
+
 <body>
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/Sweet Sensations/components/header.php'; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/Sweet Sensations/components/header.php'; ?>
     <!-- ...existing code... -->
 
     <section class="products">
@@ -83,7 +84,7 @@ $conn->close();
                 <p class="message"><?php echo $message; ?></p>
             <?php endif; ?>
             <div class="product-container">
-                <?php while($row = $result->fetch_assoc()): ?>
+                <?php while ($row = $result->fetch_assoc()): ?>
                     <div class="product">
                         <div class="image">
                             <img src="../uploads/<?php echo $row['image']; ?>" alt="<?php echo $row['name']; ?>">
@@ -118,4 +119,5 @@ $conn->close();
         </div>
     </footer>
 </body>
+
 </html>
