@@ -258,6 +258,113 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
             border: 1px solid #ebccd1;
             color: #a94442;
         }
+
+        /* Add these responsive styles */
+        @media screen and (max-width: 1024px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+
+            /* Table responsive styles */
+            .user-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .user-table th,
+            .user-table td {
+                padding: 1rem 0.75rem;
+            }
+
+            /* Modal responsive styles */
+            .modal-content {
+                width: 90%;
+                margin: 20% auto;
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+
+            /* Adjust table content for very small screens */
+            .date-cell {
+                font-size: 0.8rem;
+            }
+
+            .user-type {
+                padding: 0.3rem 0.75rem;
+                font-size: 0.75rem;
+            }
+
+            .btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+                width: 70px;
+            }
+
+            .actions-cell {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .actions-cell .btn {
+                width: 100%;
+            }
+
+            /* Adjust form elements in modal */
+            .form-group input,
+            .form-group select {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+            }
+
+            /* Make delete modal buttons stack on mobile */
+            #deleteModal .modal-content div {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            #deleteModal .modal-content .btn {
+                width: 100% !important;
+            }
+        }
+
+        /* Add smooth scrolling for table horizontal scroll */
+        .user-table {
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+
+        /* Custom scrollbar styles */
+        .user-table::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .user-table::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .user-table::-webkit-scrollbar-thumb {
+            background: #DC143C;
+            border-radius: 3px;
+        }
     </style>
 </head>
 
