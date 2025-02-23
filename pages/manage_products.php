@@ -65,6 +65,7 @@ $products = $conn->query($sql);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -85,6 +86,7 @@ $products = $conn->query($sql);
 
         header {
             background-color: #DC143C;
+            padding: 20px 0;
         }
 
         header .container {
@@ -95,6 +97,7 @@ $products = $conn->query($sql);
 
         header .logo {
             color: #FFFFFF;
+            font-size: 24px;
         }
 
         header nav ul {
@@ -133,7 +136,8 @@ $products = $conn->query($sql);
             box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
         }
 
-        input, textarea {
+        input,
+        textarea {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -172,11 +176,14 @@ $products = $conn->query($sql);
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
         }
 
-        table, th, td {
+        table,
+        th,
+        td {
             border: 1px solid #e0e0e0;
         }
 
-        th, td {
+        th,
+        td {
             padding: 14px;
             text-align: left;
         }
@@ -240,7 +247,9 @@ $products = $conn->query($sql);
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
-            th, td {
+
+            th,
+            td {
                 padding: 10px;
                 font-size: 14px;
             }
@@ -262,8 +271,8 @@ $products = $conn->query($sql);
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
             padding-top: 60px;
         }
 
@@ -292,15 +301,18 @@ $products = $conn->query($sql);
         }
     </style>
 </head>
+
 <body>
     <header>
         <div class="container">
             <h1 class="logo">Sweet Sensations</h1>
             <nav>
                 <ul>
-                    <li><a href="../pages/admin_dashboard.php">Dashboard</a></li>
-                    <li><a href="../pages/manage_users.php">Manage Users</a></li>
-                    <li><a href="../pages/view_orders.php">View Orders</a></li>
+                    <li><a href="admin_dashboard.php">Dashboard</a></li>
+                    <li><a href="manage_products.php" class="active">Manage Products</a></li>
+                    <li><a href="manage_users.php">Manage Users</a></li>
+                    <li><a href="view_orders.php">View Orders</a></li>
+                    <li><a href="sales_report.php">Sales Report</a></li>
                     <span style="color: white;">|</span>
                     <li><a href="../includes/logout.php">Log out</a></li>
                 </ul>
@@ -308,10 +320,10 @@ $products = $conn->query($sql);
         </div>
     </header>
     <div>
-        <h1 >Manage Products</h1>
+        <h1>Manage Products</h1>
         <h5 style="text-align: center; font-weight:500; margin:-10px 90px 10px 90px; border-bottom: 1px solid rgb(0, 0, 0, 0.2); padding-bottom:10px;">Add, edit, delete and manage your product listings below.</h5>
     </div>
-    
+
     <div class="container">
         <h1>Add New Product</h1>
         <?php if (isset($message)): ?>
@@ -324,40 +336,40 @@ $products = $conn->query($sql);
             <input type="file" name="image" accept="image/*" required>
             <button type="submit" name="add_product">Add Product</button>
         </form>
-          <h1>Products</h1>
-          <table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Image</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php while($row = $products->fetch_assoc()): ?>
-            <tr>
-                <td><?php echo $row['id']; ?></td>
-                <td><?php echo htmlspecialchars($row['name']); ?></td>
-                <td><?php echo htmlspecialchars($row['description']); ?></td>
-                <td>₱<?php echo number_format($row['price'], 2); ?></td>
-                <td>
-                    <img src="../uploads/<?php echo htmlspecialchars($row['image']); ?>" alt="<?php echo htmlspecialchars($row['name']); ?>" width="50" height="50">
-                </td>
-                <td class="action-btns">
-                    <button class="edit-btn" onclick="openModal(<?php echo $row['id']; ?>, '<?php echo htmlspecialchars($row['name']); ?>', '<?php echo htmlspecialchars($row['description']); ?>', <?php echo $row['price']; ?>)">Edit</button>
-                    
-                    <form action="manage_products.php" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this product?');">
-                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-                        <button type="submit" name="delete_product" class="delete-btn">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        <?php endwhile; ?>
-    </tbody>
-</table>
+        <h1>Products</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php while ($row = $products->fetch_assoc()): ?>
+                    <tr>
+                        <td><?php echo $row['id']; ?></td>
+                        <td><?php echo htmlspecialchars($row['name']); ?></td>
+                        <td><?php echo htmlspecialchars($row['description']); ?></td>
+                        <td>₱<?php echo number_format($row['price'], 2); ?></td>
+                        <td>
+                            <img src="../uploads/<?php echo htmlspecialchars($row['image']); ?>" alt="<?php echo htmlspecialchars($row['name']); ?>" width="50" height="50">
+                        </td>
+                        <td class="action-btns">
+                            <button class="edit-btn" onclick="openModal(<?php echo $row['id']; ?>, '<?php echo htmlspecialchars($row['name']); ?>', '<?php echo htmlspecialchars($row['description']); ?>', <?php echo $row['price']; ?>)">Edit</button>
+
+                            <form action="manage_products.php" method="POST" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                                <button type="submit" name="delete_product" class="delete-btn">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
 
     </div>
 
@@ -398,4 +410,5 @@ $products = $conn->query($sql);
     </script>
     <?php $conn->close(); ?>
 </body>
+
 </html>

@@ -27,9 +27,28 @@ $result = $conn->query($query);
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
     <style>
-        /* Add these new header styles */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        /* Header/Navigation Styles */
         header {
             background-color: #DC143C;
+            padding: 20px 0;
         }
 
         header .container {
@@ -40,6 +59,7 @@ $result = $conn->query($query);
 
         header .logo {
             color: #FFFFFF;
+            font-size: 24px;
         }
 
         header nav ul {
@@ -82,12 +102,6 @@ $result = $conn->query($query);
             margin-bottom: 20px;
             color: #1e293b;
             border-bottom: none;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
         }
 
         .message {
@@ -345,10 +359,11 @@ $result = $conn->query($query);
             <h1 class="logo">Sweet Sensations</h1>
             <nav>
                 <ul>
-                    <li><a href="../pages/admin_dashboard.php">Dashboard</a></li>
-                    <li><a href="../pages/manage_users.php">Manage Users</a></li>
-                    <li><a href="../pages/manage_products.php">Manage Products</a></li>
-                    <li><a href="../pages/sales_report.php">Sales Report</a></li>
+                    <li><a href="admin_dashboard.php">Dashboard</a></li>
+                    <li><a href="manage_products.php">Manage Products</a></li>
+                    <li><a href="manage_users.php">Manage Users</a></li>
+                    <li><a href="view_orders.php" class="active">View Orders</a></li>
+                    <li><a href="sales_report.php">Sales Report</a></li>
                     <span style="color: white;">|</span>
                     <li><a href="../includes/logout.php">Log out</a></li>
                 </ul>

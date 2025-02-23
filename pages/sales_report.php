@@ -105,6 +105,39 @@ if ($summary['previous_period_total'] > 0) {
     <link rel="stylesheet" href="../assets/css/style.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
     <style>
+        header {
+            background-color: #DC143C;
+            padding: 20px 0;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo {
+            color: #FFFFFF;
+            font-size: 24px;
+        }
+
+        header nav ul {
+            display: flex;
+            gap: 20px;
+            list-style-type: none;
+        }
+
+        header nav ul a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        header nav ul a:hover {
+            text-decoration: underline;
+            text-underline-offset: 5px;
+        }
+
         .report-container {
             padding: 2rem;
             background: #fff;
@@ -213,10 +246,11 @@ if ($summary['previous_period_total'] > 0) {
             <h1 class="logo">Sweet Sensations</h1>
             <nav>
                 <ul>
-                    <li><a href="../pages/admin_dashboard.php">Dashboard</a></li>
-                    <li><a href="../pages/manage_users.php">Manage Users</a></li>
-                    <li><a href="../pages/manage_products.php">Manage Products</a></li>
-                    <li><a href="../pages/sales_report.php">Sales Report</a></li>
+                    <li><a href="admin_dashboard.php">Dashboard</a></li>
+                    <li><a href="manage_products.php">Manage Products</a></li>
+                    <li><a href="manage_users.php">Manage Users</a></li>
+                    <li><a href="view_orders.php">View Orders</a></li>
+                    <li><a href="sales_report.php" class="active">Sales Report</a></li>
                     <span style="color: white;">|</span>
                     <li><a href="../includes/logout.php">Log out</a></li>
                 </ul>
