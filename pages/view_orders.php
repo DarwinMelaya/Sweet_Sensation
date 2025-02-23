@@ -348,6 +348,7 @@ $result = $conn->query($query);
                     <li><a href="../pages/admin_dashboard.php">Dashboard</a></li>
                     <li><a href="../pages/manage_users.php">Manage Users</a></li>
                     <li><a href="../pages/manage_products.php">Manage Products</a></li>
+                    <li><a href="../pages/sales_report.php">Sales Report</a></li>
                     <span style="color: white;">|</span>
                     <li><a href="../includes/logout.php">Log out</a></li>
                 </ul>
@@ -409,6 +410,8 @@ $result = $conn->query($query);
                                         ?>
                                     </select>
                                     <input type="hidden" name="order_id" value="<?php echo $order['id']; ?>">
+                                    <input type="hidden" name="total_amount" value="<?php echo $order['total_amount']; ?>">
+                                    <input type="hidden" name="current_status" value="<?php echo $order['status']; ?>">
                                 </form>
                             </td>
                             <td><?php echo date('M d, Y H:i', strtotime($order['created_at'])); ?></td>

@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'db_connection.php';
 
 // Check if user is admin
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
@@ -7,32 +8,43 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id']) && isset($_POST['status'])) {
-    require_once '../includes/db_connection.php';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $order_id = $_POST['order_id'];
+    $new_status = $_POST['status'];
+    $current_status = $_POST['current_status'];
+    $total_amount = $_POST['total_amount'];
 
-    $order_id = (int)$_POST['order_id'];
-    $status = $_POST['status'];
+    // Start transaction
+    $conn->begin_transaction();
 
-    // Validate status
-    $valid_statuses = ['pending', 'processing', 'completed', 'cancelled'];
-    if (!in_array($status, $valid_statuses)) {
-        $_SESSION['error'] = "Invalid status selected.";
-        header('Location: ../pages/view_orders.php');
-        exit();
-    }
+    try {
+        // Update order status
+        $update_query = "UPDATE orders SET status = ? WHERE id = ?";
+        $stmt = $conn->prepare($update_query);
+        $stmt->bind_param("si", $new_status, $order_id);
+        $stmt->execute();
 
-    // Update the order status
-    $stmt = $conn->prepare("UPDATE orders SET status = ? WHERE id = ?");
-    $stmt->bind_param("si", $status, $order_id);
+        // If status is being changed to 'completed', record the sale
+        if ($new_status === 'completed' && $current_status !== 'completed') {
+            $insert_sale_query = "INSERT INTO sales (order_id) VALUES (?)";
+            $stmt = $conn->prepare($insert_sale_query);
+            $stmt->bind_param("i", $order_id);
+            $stmt->execute();
+        }
 
-    if ($stmt->execute()) {
+        // Commit transaction
+        $conn->commit();
+
         $_SESSION['success'] = "Order status updated successfully!";
-    } else {
-        $_SESSION['error'] = "Error updating order status.";
+    } catch (Exception $e) {
+        // Rollback transaction on error
+        $conn->rollback();
+        $_SESSION['error'] = "Error updating order status: " . $e->getMessage();
     }
-
-    $stmt->close();
+} else {
+    $_SESSION['error'] = "Invalid request method";
 }
 
+// Redirect back to view orders page
 header('Location: ../pages/view_orders.php');
 exit();
